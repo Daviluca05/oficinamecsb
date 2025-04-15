@@ -16,9 +16,13 @@ jobs:
       - name: 📦 Compactar o index.html
         run: zip app.zip index.html
 
+      - name: 🔐 Login no Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+
       - name: 🚀 Deploy para o Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: app-oficina123
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: app.zip
