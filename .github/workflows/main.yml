@@ -1,0 +1,26 @@
+name: Deploy Oficina Mecânica no Azure
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Clonar o repositório
+        uses: actions/checkout@v3
+
+      - name: 📦 Criar app.zip com o index.html na raiz
+        run: |
+          cp oficinamec/index.html .
+          zip app.zip index.html
+
+      - name: 🚀 Deploy para o Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: app-oficina123
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: app.zip
