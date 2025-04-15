@@ -13,10 +13,8 @@ jobs:
       - name: 📥 Clonar o repositório
         uses: actions/checkout@v3
 
-      - name: 📦 Criar app.zip com o index.html na raiz
-        run: |
-          cp oficinamec/index.html .
-          zip app.zip index.html
+      - name: 📦 Compactar o index.html
+        run: zip app.zip index.html
 
       - name: 🚀 Deploy para o Azure Web App
         uses: azure/webapps-deploy@v2
