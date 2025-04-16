@@ -51,6 +51,25 @@
       padding: 15px;
       margin-bottom: 10px;
       border-radius: 5px;
+      position: relative;
+    }
+    .card .actions {
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      display: flex;
+      gap: 5px;
+    }
+    .card .actions button {
+      width: auto;
+      padding: 5px 8px;
+      font-size: 0.9em;
+    }
+    .card .actions .delete {
+      background-color: #cc0000;
+    }
+    .card .actions .delete:hover {
+      background-color: #990000;
     }
     .search {
       margin: 20px 0;
@@ -64,10 +83,10 @@
   </header>
 
   <main>
-    <h2>Adicionar Serviço</h2>
+    <h2 id="form-title">Adicionar Serviço</h2>
     <input type="text" id="titulo" placeholder="Título do serviço">
     <textarea id="descricao" rows="4" placeholder="Descrição detalhada"></textarea>
-    <button onclick="adicionarServico()">Salvar</button>
+    <button onclick="salvarServico()" id="botao-salvar">Salvar</button>
 
     <div class="search">
       <h2>Pesquisar Serviços</h2>
@@ -79,8 +98,14 @@
   </main>
 
   <script>
+    let modoEdicao = false;
+    let idEditando = null;
     const lista = document.getElementById("lista-servicos");
     const busca = document.getElementById("busca");
+    const inputTitulo = document.getElementById("titulo");
+    const inputDescricao = document.getElementById("descricao");
+    const botaoSalvar = document.getElementById("botao-salvar");
+    const formTitle = document.getElementById("form-title");
 
     function obterServicos() {
       return JSON.parse(localStorage.getItem("servicos")) || [];
@@ -90,21 +115,52 @@
       localStorage.setItem("servicos", JSON.stringify(servicos));
     }
 
-    function adicionarServico() {
-      const titulo = document.getElementById("titulo").value.trim();
-      const descricao = document.getElementById("descricao").value.trim();
+    function salvarServico() {
+      const titulo = inputTitulo.value.trim();
+      const descricao = inputDescricao.value.trim();
       if (!titulo || !descricao) {
-        alert("Por favor, preencha título e descrição.");
+        alert("Preencha título e descrição!");
         return;
       }
 
-      const novo = { titulo, descricao };
-      const servicos = obterServicos();
-      servicos.push(novo);
+      let servicos = obterServicos();
+
+      if (modoEdicao) {
+        servicos = servicos.map(s =>
+          s.id === idEditando ? { ...s, titulo, descricao } : s
+        );
+        modoEdicao = false;
+        idEditando = null;
+        botaoSalvar.textContent = "Salvar";
+        formTitle.textContent = "Adicionar Serviço";
+      } else {
+        const novo = { id: Date.now(), titulo, descricao };
+        servicos.push(novo);
+      }
+
       salvarServicos(servicos);
-      document.getElementById("titulo").value = "";
-      document.getElementById("descricao").value = "";
-      renderizarServicos();
+      inputTitulo.value = "";
+      inputDescricao.value = "";
+      renderizarServicos(busca.value);
+    }
+
+    function apagarServico(id) {
+      const servicos = obterServicos().filter(s => s.id !== id);
+      salvarServicos(servicos);
+      renderizarServicos(busca.value);
+    }
+
+    function editarServico(id) {
+      const servico = obterServicos().find(s => s.id === id);
+      if (servico) {
+        inputTitulo.value = servico.titulo;
+        inputDescricao.value = servico.descricao;
+        modoEdicao = true;
+        idEditando = id;
+        botaoSalvar.textContent = "Salvar Edição";
+        formTitle.textContent = "Editar Serviço";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
     }
 
     function renderizarServicos(filtro = "") {
@@ -119,7 +175,14 @@
         .forEach(s => {
           const card = document.createElement("div");
           card.className = "card";
-          card.innerHTML = `<h3>${s.titulo}</h3><p>${s.descricao}</p>`;
+          card.innerHTML = `
+            <h3>${s.titulo}</h3>
+            <p>${s.descricao}</p>
+            <div class="actions">
+              <button onclick="editarServico(${s.id})">✏️ Editar</button>
+              <button class="delete" onclick="apagarServico(${s.id})">🗑️ Apagar</button>
+            </div>
+          `;
           lista.appendChild(card);
         });
     }
