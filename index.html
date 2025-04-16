@@ -4,75 +4,146 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Oficina Siga Bem - Histórico de Serviços</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f4f4f4;
+      font-family: 'Inter', sans-serif;
+      background: #eef1f7;
       margin: 0;
       padding: 0;
+      color: #333;
     }
+
     header {
-      background-color: #003366;
+      background: linear-gradient(90deg, #003366, #00509e);
       color: white;
-      padding: 20px;
+      padding: 30px 20px;
       text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.2rem;
+    }
+
+    header p {
+      margin-top: 8px;
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
     main {
-      max-width: 800px;
-      margin: 30px auto;
+      max-width: 900px;
+      margin: 40px auto;
       background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
     }
+
     h2 {
       margin-top: 0;
       color: #003366;
     }
-    input, textarea, button {
+
+    input, textarea {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 5px;
+      padding: 12px;
+      margin: 12px 0;
+      border-radius: 6px;
       border: 1px solid #ccc;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
     }
+
+    input:focus, textarea:focus {
+      border-color: #00509e;
+      outline: none;
+      background: #f0f8ff;
+    }
+
     button {
-      background-color: #003366;
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      background: #00509e;
       color: white;
       border: none;
+      border-radius: 6px;
       cursor: pointer;
+      transition: background 0.3s ease;
     }
+
     button:hover {
-      background-color: #00509e;
+      background: #0071ce;
     }
+
     .card {
-      background-color: #f9f9f9;
-      border-left: 5px solid #003366;
-      padding: 15px;
-      margin-bottom: 10px;
-      border-radius: 5px;
+      background: #f9f9f9;
+      border-left: 5px solid #00509e;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 8px;
       position: relative;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     }
-    .card .actions {
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 1.2rem;
+      color: #003366;
+    }
+
+    .card p {
+      margin: 0;
+    }
+
+    .actions {
       position: absolute;
       right: 15px;
       top: 15px;
       display: flex;
-      gap: 5px;
+      gap: 8px;
     }
-    .card .actions button {
-      width: auto;
-      padding: 5px 8px;
-      font-size: 0.9em;
+
+    .actions button {
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      border-radius: 4px;
+      background: #ddd;
+      color: #333;
     }
-    .card .actions .delete {
-      background-color: #cc0000;
+
+    .actions button:hover {
+      background: #ccc;
     }
-    .card .actions .delete:hover {
-      background-color: #990000;
+
+    .actions .delete {
+      background: #d9534f;
+      color: white;
     }
-    .search {
-      margin: 20px 0;
+
+    .actions .delete:hover {
+      background: #b52b27;
+    }
+
+    .search input {
+      margin-top: 8px;
+    }
+
+    @media (max-width: 600px) {
+      .actions {
+        position: static;
+        margin-top: 10px;
+      }
+      .actions button {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -85,7 +156,7 @@
   <main>
     <h2 id="form-title">Adicionar Serviço</h2>
     <input type="text" id="titulo" placeholder="Título do serviço">
-    <textarea id="descricao" rows="4" placeholder="Descrição detalhada"></textarea>
+    <textarea id="descricao" rows="4" placeholder="Descrição detalhada do serviço..."></textarea>
     <button onclick="salvarServico()" id="botao-salvar">Salvar</button>
 
     <div class="search">
