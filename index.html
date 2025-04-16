@@ -3,266 +3,275 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Oficina Siga Bem - Histórico de Serviços</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <title>Painel - Oficina Mecânica</title>
   <style>
     * {
       box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
     }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background: #eef1f7;
       margin: 0;
-      padding: 0;
-      color: #333;
+      background: #f0f2f5;
+      display: flex;
+      height: 100vh;
     }
 
-    header {
-      background: linear-gradient(90deg, #003366, #00509e);
+    /* MENU LATERAL */
+    .sidebar {
+      width: 250px;
+      background-color: #2c3e50;
       color: white;
-      padding: 30px 20px;
+      padding-top: 30px;
+    }
+
+    .sidebar h2 {
       text-align: center;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      margin-bottom: 40px;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 2.2rem;
-    }
-
-    header p {
-      margin-top: 8px;
-      font-size: 1rem;
-      opacity: 0.9;
-    }
-
-    main {
-      max-width: 900px;
-      margin: 40px auto;
-      background: white;
-      padding: 40px 30px;
-      border-radius: 12px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-    }
-
-    h2 {
-      margin-top: 0;
-      color: #003366;
-    }
-
-    input, textarea {
+    .sidebar button {
+      display: block;
       width: 100%;
-      padding: 12px;
-      margin: 12px 0;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-      transition: border-color 0.3s ease;
-    }
-
-    input:focus, textarea:focus {
-      border-color: #00509e;
-      outline: none;
-      background: #f0f8ff;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      font-size: 1rem;
-      background: #00509e;
+      padding: 15px;
+      background: none;
       color: white;
       border: none;
-      border-radius: 6px;
+      text-align: left;
       cursor: pointer;
-      transition: background 0.3s ease;
     }
 
-    button:hover {
-      background: #0071ce;
+    .sidebar button:hover,
+    .sidebar button.active {
+      background-color: #34495e;
+    }
+
+    /* CONTEÚDO PRINCIPAL */
+    .main {
+      flex-grow: 1;
+      padding: 30px;
+      background-color: #ecf0f1;
+      overflow-y: auto;
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #2c3e50;
+    }
+
+    input, textarea, button {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      border-radius: 5px;
+      border: 1px solid #bdc3c7;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    .btn-save {
+      background-color: #2c3e50;
+      color: white;
+      border: none;
+    }
+
+    .btn-save:hover {
+      background-color: #1a242f;
+    }
+
+    .search {
+      margin: 20px 0;
     }
 
     .card {
-      background: #f9f9f9;
-      border-left: 5px solid #00509e;
-      padding: 20px;
-      margin-bottom: 15px;
-      border-radius: 8px;
+      background: white;
+      border-left: 5px solid #2c3e50;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 10px;
       position: relative;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     }
 
-    .card h3 {
-      margin: 0 0 10px;
-      font-size: 1.2rem;
-      color: #003366;
-    }
-
-    .card p {
-      margin: 0;
-    }
-
-    .actions {
+    .card .actions {
       position: absolute;
-      right: 15px;
-      top: 15px;
-      display: flex;
-      gap: 8px;
+      right: 10px;
+      top: 10px;
     }
 
-    .actions button {
-      padding: 6px 10px;
-      font-size: 0.85rem;
+    .card .actions button {
+      margin-left: 5px;
+      padding: 5px 10px;
+      border: none;
       border-radius: 4px;
-      background: #ddd;
-      color: #333;
+      font-size: 0.9em;
     }
 
-    .actions button:hover {
-      background: #ccc;
+    .edit-btn {
+      background: #f1c40f;
     }
 
-    .actions .delete {
-      background: #d9534f;
+    .delete-btn {
+      background: #e74c3c;
       color: white;
     }
 
-    .actions .delete:hover {
-      background: #b52b27;
-    }
-
-    .search input {
-      margin-top: 8px;
-    }
-
-    @media (max-width: 600px) {
-      .actions {
-        position: static;
-        margin-top: 10px;
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
       }
-      .actions button {
+
+      .sidebar {
         width: 100%;
+        display: flex;
+        overflow-x: auto;
+      }
+
+      .sidebar button {
+        flex: 1;
+        text-align: center;
+      }
+
+      .main {
+        padding: 20px;
       }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Oficina Mecânica Siga Bem</h1>
-    <p>Sistema de histórico de serviços — seguro e acessível remotamente</p>
-  </header>
+  <div class="sidebar">
+    <h2>Oficina Painel</h2>
+    <button class="active" onclick="mostrarSecao('servicos')">Serviços</button>
+    <button onclick="mostrarSecao('clientes')">Clientes</button>
+  </div>
 
-  <main>
-    <h2 id="form-title">Adicionar Serviço</h2>
-    <input type="text" id="titulo" placeholder="Título do serviço">
-    <textarea id="descricao" rows="4" placeholder="Descrição detalhada do serviço..."></textarea>
-    <button onclick="salvarServico()" id="botao-salvar">Salvar</button>
+  <div class="main">
+    <!-- SEÇÃO SERVIÇOS -->
+    <div id="servicos" class="secao">
+      <h1>Serviços</h1>
+      <input type="text" id="tituloServico" placeholder="Título do serviço" />
+      <textarea id="descricaoServico" rows="3" placeholder="Descrição"></textarea>
+      <button class="btn-save" onclick="salvarItem('servicos')">Salvar Serviço</button>
 
-    <div class="search">
-      <h2>Pesquisar Serviços</h2>
-      <input type="text" id="busca" placeholder="Buscar por título ou descrição..." oninput="filtrarServicos()">
+      <div class="search">
+        <input type="text" id="buscarServico" placeholder="Buscar serviço..." oninput="renderizar('servicos')" />
+      </div>
+
+      <div id="lista-servicos"></div>
     </div>
 
-    <h2>Histórico de Serviços</h2>
-    <div id="lista-servicos"></div>
-  </main>
+    <!-- SEÇÃO CLIENTES -->
+    <div id="clientes" class="secao" style="display: none;">
+      <h1>Clientes</h1>
+      <input type="text" id="nomeCliente" placeholder="Nome do cliente" />
+      <textarea id="infoCliente" rows="3" placeholder="Informações"></textarea>
+      <button class="btn-save" onclick="salvarItem('clientes')">Salvar Cliente</button>
+
+      <div class="search">
+        <input type="text" id="buscarCliente" placeholder="Buscar cliente..." oninput="renderizar('clientes')" />
+      </div>
+
+      <div id="lista-clientes"></div>
+    </div>
+  </div>
 
   <script>
-    let modoEdicao = false;
-    let idEditando = null;
-    const lista = document.getElementById("lista-servicos");
-    const busca = document.getElementById("busca");
-    const inputTitulo = document.getElementById("titulo");
-    const inputDescricao = document.getElementById("descricao");
-    const botaoSalvar = document.getElementById("botao-salvar");
-    const formTitle = document.getElementById("form-title");
+    let edicao = { tipo: null, id: null };
 
-    function obterServicos() {
-      return JSON.parse(localStorage.getItem("servicos")) || [];
+    function mostrarSecao(secao) {
+      document.querySelectorAll('.secao').forEach(s => s.style.display = 'none');
+      document.getElementById(secao).style.display = 'block';
+
+      document.querySelectorAll('.sidebar button').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      renderizar(secao);
     }
 
-    function salvarServicos(servicos) {
-      localStorage.setItem("servicos", JSON.stringify(servicos));
-    }
+    function salvarItem(tipo) {
+      const titulo = tipo === 'servicos'
+        ? document.getElementById('tituloServico').value.trim()
+        : document.getElementById('nomeCliente').value.trim();
 
-    function salvarServico() {
-      const titulo = inputTitulo.value.trim();
-      const descricao = inputDescricao.value.trim();
-      if (!titulo || !descricao) {
-        alert("Preencha título e descrição!");
-        return;
-      }
+      const desc = tipo === 'servicos'
+        ? document.getElementById('descricaoServico').value.trim()
+        : document.getElementById('infoCliente').value.trim();
 
-      let servicos = obterServicos();
+      if (!titulo || !desc) return alert("Preencha todos os campos!");
 
-      if (modoEdicao) {
-        servicos = servicos.map(s =>
-          s.id === idEditando ? { ...s, titulo, descricao } : s
-        );
-        modoEdicao = false;
-        idEditando = null;
-        botaoSalvar.textContent = "Salvar";
-        formTitle.textContent = "Adicionar Serviço";
+      let lista = JSON.parse(localStorage.getItem(tipo)) || [];
+
+      if (edicao.tipo === tipo && edicao.id !== null) {
+        lista = lista.map(item => item.id === edicao.id ? { id: item.id, titulo, desc } : item);
+        edicao = { tipo: null, id: null };
       } else {
-        const novo = { id: Date.now(), titulo, descricao };
-        servicos.push(novo);
+        lista.push({ id: Date.now(), titulo, desc });
       }
 
-      salvarServicos(servicos);
-      inputTitulo.value = "";
-      inputDescricao.value = "";
-      renderizarServicos(busca.value);
+      localStorage.setItem(tipo, JSON.stringify(lista));
+      limparCampos(tipo);
+      renderizar(tipo);
     }
 
-    function apagarServico(id) {
-      const servicos = obterServicos().filter(s => s.id !== id);
-      salvarServicos(servicos);
-      renderizarServicos(busca.value);
-    }
+    function editarItem(tipo, id) {
+      const item = (JSON.parse(localStorage.getItem(tipo)) || []).find(i => i.id === id);
+      if (!item) return;
 
-    function editarServico(id) {
-      const servico = obterServicos().find(s => s.id === id);
-      if (servico) {
-        inputTitulo.value = servico.titulo;
-        inputDescricao.value = servico.descricao;
-        modoEdicao = true;
-        idEditando = id;
-        botaoSalvar.textContent = "Salvar Edição";
-        formTitle.textContent = "Editar Serviço";
-        window.scrollTo({ top: 0, behavior: "smooth" });
+      if (tipo === 'servicos') {
+        document.getElementById('tituloServico').value = item.titulo;
+        document.getElementById('descricaoServico').value = item.desc;
+      } else {
+        document.getElementById('nomeCliente').value = item.titulo;
+        document.getElementById('infoCliente').value = item.desc;
       }
+
+      edicao = { tipo, id };
     }
 
-    function renderizarServicos(filtro = "") {
-      const servicos = obterServicos();
-      lista.innerHTML = "";
+    function deletarItem(tipo, id) {
+      let lista = JSON.parse(localStorage.getItem(tipo)) || [];
+      lista = lista.filter(i => i.id !== id);
+      localStorage.setItem(tipo, JSON.stringify(lista));
+      renderizar(tipo);
+    }
 
-      servicos
-        .filter(s =>
-          s.titulo.toLowerCase().includes(filtro.toLowerCase()) ||
-          s.descricao.toLowerCase().includes(filtro.toLowerCase())
-        )
-        .forEach(s => {
-          const card = document.createElement("div");
-          card.className = "card";
+    function renderizar(tipo) {
+      const lista = JSON.parse(localStorage.getItem(tipo)) || [];
+      const busca = document.getElementById(tipo === 'servicos' ? 'buscarServico' : 'buscarCliente').value.toLowerCase();
+      const container = document.getElementById('lista-' + tipo);
+
+      container.innerHTML = '';
+
+      lista
+        .filter(item => item.titulo.toLowerCase().includes(busca) || item.desc.toLowerCase().includes(busca))
+        .forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'card';
           card.innerHTML = `
-            <h3>${s.titulo}</h3>
-            <p>${s.descricao}</p>
+            <strong>${item.titulo}</strong>
+            <p>${item.desc}</p>
             <div class="actions">
-              <button onclick="editarServico(${s.id})">✏️ Editar</button>
-              <button class="delete" onclick="apagarServico(${s.id})">🗑️ Apagar</button>
+              <button class="edit-btn" onclick="editarItem('${tipo}', ${item.id})">✏️</button>
+              <button class="delete-btn" onclick="deletarItem('${tipo}', ${item.id})">🗑️</button>
             </div>
           `;
-          lista.appendChild(card);
+          container.appendChild(card);
         });
     }
 
-    function filtrarServicos() {
-      renderizarServicos(busca.value);
+    function limparCampos(tipo) {
+      if (tipo === 'servicos') {
+        document.getElementById('tituloServico').value = '';
+        document.getElementById('descricaoServico').value = '';
+      } else {
+        document.getElementById('nomeCliente').value = '';
+        document.getElementById('infoCliente').value = '';
+      }
     }
 
-    renderizarServicos();
+    // Inicializa a aba serviços por padrão
+    renderizar('servicos');
   </script>
 </body>
 </html>
