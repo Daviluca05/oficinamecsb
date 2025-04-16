@@ -1,20 +1,134 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Oficina Mecânica Siga Bem</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Oficina Siga Bem - Histórico de Serviços</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #003366;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    main {
+      max-width: 800px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+      color: #003366;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #003366;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #00509e;
+    }
+    .card {
+      background-color: #f9f9f9;
+      border-left: 5px solid #003366;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+    .search {
+      margin: 20px 0;
+    }
+  </style>
 </head>
 <body>
-  <h1>Histórico Servico muito bem - Oficina Siga Bem</h1>
-  <form>
-    <label for="title">Título do Serviço:</label><br />
-    <input type="text" id="title" name="title"><br /><br />
+  <header>
+    <h1>Oficina Mecânica Siga Bem</h1>
+    <p>Sistema de histórico de serviços — seguro e acessível remotamente</p>
+  </header>
 
-    <label for="description">Descrição:</label><br />
-    <textarea id="description" name="description"></textarea><br /><br />
+  <main>
+    <h2>Adicionar Serviço</h2>
+    <input type="text" id="titulo" placeholder="Título do serviço">
+    <textarea id="descricao" rows="4" placeholder="Descrição detalhada"></textarea>
+    <button onclick="adicionarServico()">Salvar</button>
 
-    <button type="submit">Salvar</button>
-  </form>
+    <div class="search">
+      <h2>Pesquisar Serviços</h2>
+      <input type="text" id="busca" placeholder="Buscar por título ou descrição..." oninput="filtrarServicos()">
+    </div>
+
+    <h2>Histórico de Serviços</h2>
+    <div id="lista-servicos"></div>
+  </main>
+
+  <script>
+    const lista = document.getElementById("lista-servicos");
+    const busca = document.getElementById("busca");
+
+    function obterServicos() {
+      return JSON.parse(localStorage.getItem("servicos")) || [];
+    }
+
+    function salvarServicos(servicos) {
+      localStorage.setItem("servicos", JSON.stringify(servicos));
+    }
+
+    function adicionarServico() {
+      const titulo = document.getElementById("titulo").value.trim();
+      const descricao = document.getElementById("descricao").value.trim();
+      if (!titulo || !descricao) {
+        alert("Por favor, preencha título e descrição.");
+        return;
+      }
+
+      const novo = { titulo, descricao };
+      const servicos = obterServicos();
+      servicos.push(novo);
+      salvarServicos(servicos);
+      document.getElementById("titulo").value = "";
+      document.getElementById("descricao").value = "";
+      renderizarServicos();
+    }
+
+    function renderizarServicos(filtro = "") {
+      const servicos = obterServicos();
+      lista.innerHTML = "";
+
+      servicos
+        .filter(s =>
+          s.titulo.toLowerCase().includes(filtro.toLowerCase()) ||
+          s.descricao.toLowerCase().includes(filtro.toLowerCase())
+        )
+        .forEach(s => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `<h3>${s.titulo}</h3><p>${s.descricao}</p>`;
+          lista.appendChild(card);
+        });
+    }
+
+    function filtrarServicos() {
+      renderizarServicos(busca.value);
+    }
+
+    renderizarServicos();
+  </script>
 </body>
 </html>
