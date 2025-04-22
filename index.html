@@ -14,7 +14,7 @@
       margin: 0;
       height: 100vh;
       display: flex;
-      background: linear-gradient(to bottom, #ffffff, #d0e7ff);
+      background: linear-gradient(to bottom, #ffffff, #d0e7ff); /* Degradê azul claro */
     }
 
     .sidebar {
@@ -115,14 +115,6 @@
       color: white;
     }
 
-    .timestamp {
-      position: absolute;
-      bottom: 10px;
-      right: 15px;
-      font-size: 0.75em;
-      color: #7f8c8d;
-    }
-
     @media (max-width: 768px) {
       body {
         flex-direction: column;
@@ -205,15 +197,12 @@
       if (!titulo || !desc) return alert("Preencha todos os campos!");
 
       let lista = JSON.parse(localStorage.getItem(tipo)) || [];
-      const horario = new Date().toLocaleTimeString();
 
       if (edicao.tipo === tipo && edicao.id !== null) {
-        lista = lista.map(item =>
-          item.id === edicao.id ? { ...item, titulo, desc } : item
-        );
+        lista = lista.map(item => item.id === edicao.id ? { id: item.id, titulo, desc } : item);
         edicao = { tipo: null, id: null };
       } else {
-        lista.push({ id: Date.now(), titulo, desc, horario });
+        lista.push({ id: Date.now(), titulo, desc });
       }
 
       localStorage.setItem(tipo, JSON.stringify(lista));
@@ -258,7 +247,6 @@
           card.innerHTML = `
             <strong>${item.titulo}</strong>
             <p>${item.desc}</p>
-            <small class="timestamp">${item.horario || ''}</small>
             <div class="actions">
               <button class="edit-btn" onclick="editarItem('${tipo}', ${item.id})">✏️</button>
               <button class="delete-btn" onclick="deletarItem('${tipo}', ${item.id})">🗑️</button>
