@@ -1,32 +1,212 @@
-<!-- dentro do <script> -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Painel - Oficina SB</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      background: linear-gradient(to bottom, #ffffff, #d0e7ff);
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #2c3e50;
+      color: white;
+      padding-top: 30px;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .sidebar button {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      background: none;
+      color: white;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .sidebar button:hover,
+    .sidebar button.active {
+      background-color: #34495e;
+    }
+
+    .main {
+      flex-grow: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #2c3e50;
+    }
+
+    input, textarea, button {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      border-radius: 5px;
+      border: 1px solid #bdc3c7;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    .btn-save {
+      background-color: #2c3e50;
+      color: white;
+      border: none;
+    }
+
+    .btn-save:hover {
+      background-color: #1a242f;
+    }
+
+    .search {
+      margin: 20px 0;
+    }
+
+    .card {
+      background: white;
+      border-left: 5px solid #2c3e50;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      position: relative;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .card .actions {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+    }
+
+    .card .actions button {
+      margin-left: 5px;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+
+    .edit-btn {
+      background: #f1c40f;
+    }
+
+    .delete-btn {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .timestamp {
+      position: absolute;
+      bottom: 10px;
+      right: 15px;
+      font-size: 0.75em;
+      color: #7f8c8d;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        display: flex;
+        overflow-x: auto;
+      }
+
+      .sidebar button {
+        flex: 1;
+        text-align: center;
+      }
+
+      .main {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Painel - OficinaSB</h2>
+    <button class="active" onclick="mostrarSecao('servicos')">Serviços</button>
+    <button onclick="mostrarSecao('clientes')">Clientes</button>
+  </div>
+
+  <div class="main">
+    <div id="servicos" class="secao">
+      <h1>Serviços</h1>
+      <input type="text" id="tituloServico" placeholder="Título do serviço" />
+      <textarea id="descricaoServico" rows="3" placeholder="Descrição"></textarea>
+      <button class="btn-save" onclick="salvarItem('servicos')">Salvar Serviço</button>
+
+      <div class="search">
+        <input type="text" id="buscarServico" placeholder="Buscar serviço..." oninput="renderizar('servicos')" />
+      </div>
+
+      <div id="lista-servicos"></div>
+    </div>
+
+    <div id="clientes" class="secao" style="display: none;">
+      <h1>Clientes</h1>
+      <input type="text" id="nomeCliente" placeholder="Nome do cliente" />
+      <textarea id="infoCliente" rows="3" placeholder="Informações"></textarea>
+      <button class="btn-save" onclick="salvarItem('clientes')">Salvar Cliente</button>
+
+      <div class="search">
+        <input type="text" id="buscarCliente" placeholder="Buscar cliente..." oninput="renderizar('clientes')" />
+      </div>
+
+      <div id="lista-clientes"></div>
+    </div>
+  </div>
+
   <script>
     let edicao = { tipo: null, id: null };
-  
+
     function mostrarSecao(secao) {
       document.querySelectorAll('.secao').forEach(s => s.style.display = 'none');
       document.getElementById(secao).style.display = 'block';
-  
+
       document.querySelectorAll('.sidebar button').forEach(btn => btn.classList.remove('active'));
       event.target.classList.add('active');
-  
+
       renderizar(secao);
     }
-  
+
     function salvarItem(tipo) {
       const titulo = tipo === 'servicos'
         ? document.getElementById('tituloServico').value.trim()
         : document.getElementById('nomeCliente').value.trim();
-  
+
       const desc = tipo === 'servicos'
         ? document.getElementById('descricaoServico').value.trim()
         : document.getElementById('infoCliente').value.trim();
-  
+
       if (!titulo || !desc) return alert("Preencha todos os campos!");
-  
+
       let lista = JSON.parse(localStorage.getItem(tipo)) || [];
-  
       const horario = new Date().toLocaleTimeString();
-  
+
       if (edicao.tipo === tipo && edicao.id !== null) {
         lista = lista.map(item =>
           item.id === edicao.id ? { ...item, titulo, desc } : item
@@ -35,16 +215,16 @@
       } else {
         lista.push({ id: Date.now(), titulo, desc, horario });
       }
-  
+
       localStorage.setItem(tipo, JSON.stringify(lista));
       limparCampos(tipo);
       renderizar(tipo);
     }
-  
+
     function editarItem(tipo, id) {
       const item = (JSON.parse(localStorage.getItem(tipo)) || []).find(i => i.id === id);
       if (!item) return;
-  
+
       if (tipo === 'servicos') {
         document.getElementById('tituloServico').value = item.titulo;
         document.getElementById('descricaoServico').value = item.desc;
@@ -52,24 +232,24 @@
         document.getElementById('nomeCliente').value = item.titulo;
         document.getElementById('infoCliente').value = item.desc;
       }
-  
+
       edicao = { tipo, id };
     }
-  
+
     function deletarItem(tipo, id) {
       let lista = JSON.parse(localStorage.getItem(tipo)) || [];
       lista = lista.filter(i => i.id !== id);
       localStorage.setItem(tipo, JSON.stringify(lista));
       renderizar(tipo);
     }
-  
+
     function renderizar(tipo) {
       const lista = JSON.parse(localStorage.getItem(tipo)) || [];
       const busca = document.getElementById(tipo === 'servicos' ? 'buscarServico' : 'buscarCliente').value.toLowerCase();
       const container = document.getElementById('lista-' + tipo);
-  
+
       container.innerHTML = '';
-  
+
       lista
         .filter(item => item.titulo.toLowerCase().includes(busca) || item.desc.toLowerCase().includes(busca))
         .forEach(item => {
@@ -87,7 +267,7 @@
           container.appendChild(card);
         });
     }
-  
+
     function limparCampos(tipo) {
       if (tipo === 'servicos') {
         document.getElementById('tituloServico').value = '';
@@ -97,18 +277,8 @@
         document.getElementById('infoCliente').value = '';
       }
     }
-  
+
     renderizar('servicos');
   </script>
-  
-  <!-- dentro do <style> -->
-  <style>
-    .timestamp {
-      position: absolute;
-      bottom: 10px;
-      right: 15px;
-      font-size: 0.75em;
-      color: #7f8c8d;
-    }
-  </style>
-  
+</body>
+</html>
