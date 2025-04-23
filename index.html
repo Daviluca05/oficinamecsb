@@ -162,7 +162,7 @@
     <div id="clientes" class="secao" style="display: none;">
       <h1>Clientes</h1>
       <input type="text" id="nomeCliente" placeholder="Nome do cliente" />
-      <input type="text" id="numeroCliente" placeholder="Número do cliente" />
+      <input type="number" id="numeroCliente" placeholder="Número do cliente" />
       <textarea id="infoCliente" rows="3" placeholder="Informações"></textarea>
       <button class="btn-save" onclick="salvarItem('clientes')">Salvar Cliente</button>
 
@@ -206,6 +206,10 @@
 
       if (!titulo || !desc || (tipo === 'clientes' && !numero)) {
         return alert("Preencha todos os campos!");
+      }
+
+      if (tipo === 'clientes' && isNaN(numero)) {
+        return alert("O número do cliente deve conter apenas números!");
       }
 
       let lista = JSON.parse(localStorage.getItem(tipo)) || [];
