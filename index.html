@@ -14,7 +14,7 @@
       margin: 0;
       height: 100vh;
       display: flex;
-      background: linear-gradient(to bottom, #ffffff, #d0e7ff);
+      background: linear-gradient(to bottom, #ffffff, red);
     }
 
     .sidebar {
@@ -162,6 +162,7 @@
     <div id="clientes" class="secao" style="display: none;">
       <h1>Clientes</h1>
       <input type="text" id="nomeCliente" placeholder="Nome do cliente" />
+      <input type="text" id="numeroCliente" placeholder="Número do cliente" />
       <textarea id="infoCliente" rows="3" placeholder="Informações"></textarea>
       <button class="btn-save" onclick="salvarItem('clientes')">Salvar Cliente</button>
 
@@ -199,17 +200,25 @@
         ? document.getElementById('clienteServico').value.trim()
         : null;
 
-      if (!titulo || !desc) return alert("Preencha todos os campos!");
+      const numero = tipo === 'clientes'
+        ? document.getElementById('numeroCliente').value.trim()
+        : null;
+
+      if (!titulo || !desc || (tipo === 'clientes' && !numero)) {
+        return alert("Preencha todos os campos!");
+      }
 
       let lista = JSON.parse(localStorage.getItem(tipo)) || [];
 
       if (edicao.tipo === tipo && edicao.id !== null) {
         lista = lista.map(item =>
-          item.id === edicao.id ? { ...item, titulo, desc, cliente: cliente || item.cliente } : item
+          item.id === edicao.id
+            ? { ...item, titulo, desc, cliente: cliente || item.cliente, numero: numero || item.numero }
+            : item
         );
         edicao = { tipo: null, id: null };
       } else {
-        lista.push({ id: Date.now(), titulo, desc, cliente });
+        lista.push({ id: Date.now(), titulo, desc, cliente, numero });
       }
 
       localStorage.setItem(tipo, JSON.stringify(lista));
@@ -227,6 +236,7 @@
         document.getElementById('clienteServico').value = item.cliente || '';
       } else {
         document.getElementById('nomeCliente').value = item.titulo;
+        document.getElementById('numeroCliente').value = item.numero || '';
         document.getElementById('infoCliente').value = item.desc;
       }
 
@@ -254,6 +264,7 @@
           card.className = 'card';
           card.innerHTML = `
             <strong>${item.titulo}</strong>
+            ${item.numero ? `<em style="color: gray;"> - Nº: ${item.numero}</em>` : ''}
             ${item.cliente ? `<em style="color: gray;"> - Cliente: ${item.cliente}</em>` : ''}
             <p>${item.desc}</p>
             <div class="actions">
@@ -272,6 +283,7 @@
         document.getElementById('clienteServico').value = '';
       } else {
         document.getElementById('nomeCliente').value = '';
+        document.getElementById('numeroCliente').value = '';
         document.getElementById('infoCliente').value = '';
       }
     }
