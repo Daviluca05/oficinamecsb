@@ -148,6 +148,7 @@
     <div id="servicos" class="secao">
       <h1>Serviços</h1>
       <input type="text" id="tituloServico" placeholder="Título do serviço" />
+      <input type="text" id="clienteServico" placeholder="Nome do cliente" />
       <textarea id="descricaoServico" rows="3" placeholder="Descrição"></textarea>
       <button class="btn-save" onclick="salvarItem('servicos')">Salvar Serviço</button>
 
@@ -194,15 +195,21 @@
         ? document.getElementById('descricaoServico').value.trim()
         : document.getElementById('infoCliente').value.trim();
 
+      const cliente = tipo === 'servicos'
+        ? document.getElementById('clienteServico').value.trim()
+        : null;
+
       if (!titulo || !desc) return alert("Preencha todos os campos!");
 
       let lista = JSON.parse(localStorage.getItem(tipo)) || [];
 
       if (edicao.tipo === tipo && edicao.id !== null) {
-        lista = lista.map(item => item.id === edicao.id ? { id: item.id, titulo, desc } : item);
+        lista = lista.map(item =>
+          item.id === edicao.id ? { ...item, titulo, desc, cliente: cliente || item.cliente } : item
+        );
         edicao = { tipo: null, id: null };
       } else {
-        lista.push({ id: Date.now(), titulo, desc });
+        lista.push({ id: Date.now(), titulo, desc, cliente });
       }
 
       localStorage.setItem(tipo, JSON.stringify(lista));
@@ -217,6 +224,7 @@
       if (tipo === 'servicos') {
         document.getElementById('tituloServico').value = item.titulo;
         document.getElementById('descricaoServico').value = item.desc;
+        document.getElementById('clienteServico').value = item.cliente || '';
       } else {
         document.getElementById('nomeCliente').value = item.titulo;
         document.getElementById('infoCliente').value = item.desc;
@@ -246,6 +254,7 @@
           card.className = 'card';
           card.innerHTML = `
             <strong>${item.titulo}</strong>
+            ${item.cliente ? `<em style="color: gray;"> - Cliente: ${item.cliente}</em>` : ''}
             <p>${item.desc}</p>
             <div class="actions">
               <button class="edit-btn" onclick="editarItem('${tipo}', ${item.id})">✏️</button>
@@ -260,6 +269,7 @@
       if (tipo === 'servicos') {
         document.getElementById('tituloServico').value = '';
         document.getElementById('descricaoServico').value = '';
+        document.getElementById('clienteServico').value = '';
       } else {
         document.getElementById('nomeCliente').value = '';
         document.getElementById('infoCliente').value = '';
